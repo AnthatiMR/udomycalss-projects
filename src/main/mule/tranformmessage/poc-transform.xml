@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="poc-transformFlow" doc:id="c4bd91ae-ef85-4c4c-807f-75b61f4bb6d6" >
+		<http:listener doc:name="Listener" doc:id="856ee098-7d6a-4964-b94f-c91ac660b114" config-ref="HTTP_Listener_config" path="/transform"/>
+		<ee:transform doc:name="Transform Message" doc:id="25277c91-c83a-409b-9d03-20b3ac7c3b62" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="firstvariable" ><![CDATA[10]]></ee:set-variable>
+				<ee:set-variable variableName="secoundvariable" ><![CDATA[20]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="e1ccdcd5-dd32-442b-bce1-6fbae9de7826" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="addvariable" ><![CDATA[vars.firstvariable + vars.secoundvariable]]></ee:set-variable>
+				<ee:set-variable variableName="multVariable" ><![CDATA[vars.firstvariable * vars.secoundvariable ]]></ee:set-variable>
+				<ee:set-variable variableName="divVariable" ><![CDATA[vars.firstvariable / vars.secoundvariable
+]]></ee:set-variable>
+				<ee:set-variable variableName="subvariable" ><![CDATA[vars.firstvariable - vars.secoundvariable]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="24877424-fc4a-430d-b346-60c7c28bdf59" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{ 
+	 addvariable:vars.addvariable,
+    multVariable:vars.multVariable, 
+     divVariable: vars.divVariable, 
+     subvariable:vars.subvariable 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="9a7501eb-dc75-4557-9c42-deab1a4de596" message='#["afetr adding value vaiable is: " ++ vars.addvariable ++&#10;"after multiple value is: " ++ vars.multVariable ++ &#10;"after division of value is: " ++ vars.divVariable ++ &#10;"after subvaiable value is: " ++ vars.subvariable]'/>
+	</flow>
+	<flow name="quryparams-transformFlow1" doc:id="206a9c97-10a9-4a6d-9655-fa1a13fd46f0" >
+		<http:listener doc:name="Listener" doc:id="835fc265-78ca-4fcd-b56e-fbfc9e37ca52" config-ref="HTTP_Listener_config" path="/test2"/>
+		<logger level="INFO" doc:name="Logger" doc:id="bba89930-b73e-4b82-a00c-b489de41297d" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="ef47e8a3-f62d-4dff-8df0-649c0f5c8e93" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	addingvalue:attributes.queryParams.id as Number + attributes.queryParams.id2 as Number + attributes.queryParams.id3 as Number + attributes.queryParams.id4 as Number, 
+	substractingvalue:attributes.queryParams.id as Number - attributes.queryParams.id2 as Number - attributes.queryParams.id3 as Number - attributes.queryParams.id4 as Number,
+	multiplayvalue:attributes.queryParams.id as Number * attributes.queryParams.id2 as Number * attributes.queryParams.id3 as Number * attributes.queryParams.id4 as Number,
+	divisionvalue:attributes.queryParams.id as Number / attributes.queryParams.id2 as Number / attributes.queryParams.id3 as Number / attributes.queryParams.id4 as Number
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="85ed3c23-5004-4daf-a2f6-4da6f7559360" message=";;;;;;;final logger;;;;;#[payload]"/>
+	</flow>
+</mule>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="multipleFlow" doc:id="c78b6383-ea7e-4bc9-afef-18815f758250" >
+		<http:listener doc:name="Listener" doc:id="01516a67-d172-4cd7-911d-e179f5b2be86" config-ref="HTTP_Listener_config" path="/test"/>
+		<set-variable value="10" doc:name="firstvariable" doc:id="f96510b9-6acf-43a9-b5cc-af1ade5f96a5" variableName="firstvariable"/>
+		<set-variable value="20" doc:name="secoundvariable" doc:id="3ef78335-c67f-44a1-90fc-6ed18c07f974" variableName="secoundvariable"/>
+		<set-variable value='#[vars.firstvariable + vars.secoundvariable]' doc:name="addvariable" doc:id="5dfd2069-3a3a-40fa-95df-354c5df91fc8" variableName="addvariable"/>
+		<set-variable value='#[vars.firstvariable * vars.secoundvariable * vars.addvariable]' doc:name="multVariable" doc:id="e4ff13ce-b6e3-44de-adc3-a884c6237d51" variableName="multVariable"/>
+		<set-variable value='#[vars.firstvariable / vars.secoundvariable]' doc:name="divVariable" doc:id="9e647ba0-bb34-48b9-911a-2bf3906a25dd" variableName="divVariable"/>
+		<set-variable value='#[vars.addvariable - vars.multVariable]' doc:name="subvariable" doc:id="694b2d15-48b2-4998-a325-4907f4e0feda" variableName="subvariable"/>
+		<logger level="DEBUG" doc:name="finalLogger" doc:id="97e37f15-f489-4705-95b7-af7542538da4" message='#[payload]'/>
+		<ee:transform doc:name="Transform Message" doc:id="abff0cdc-c733-4378-8323-fe7822fafb7d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"afetr adding value vaiable is: " ++ vars.addvariable ++
+"after multiple value is: " ++ vars.multVariable ++ 
+"after division of value is: " ++ vars.divVariable ++ 
+"after subvaiable value is: " ++ vars.subvariable  ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

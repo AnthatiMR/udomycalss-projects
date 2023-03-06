@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cebc5e5d-74ef-49eb-8d9c-9633952746b9" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="56b057fb-e4d8-4c58-a2a8-4fed8d7288d4" >
+		<http:request-connection protocol="HTTPS"/>
+	</http:request-config>
+	<flow name="udomi-session1-httprequestFlow" doc:id="58725b20-741f-4502-80b0-0bf92014855f" >
+		<http:listener doc:name="Listener" doc:id="342fdd8c-eee3-40d4-b2db-312c754c069c" config-ref="HTTP_Listener_config" path="/request"/>
+		<http:request method="GET" doc:name="Request" doc:id="f35fc718-4f23-4dab-a7ed-4d8bd6758637" config-ref="HTTP_Request_configuration" url="https://datausa.io/api/data?drilldowns=Nation&amp;measures=Population"/>
+		<logger level="INFO" doc:name="Logger" doc:id="870caac8-b80e-46eb-a2e3-9096d0dea5d7" message="#[payload]"/>
+	</flow>
+</mule>
